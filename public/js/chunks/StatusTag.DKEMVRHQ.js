@@ -1,0 +1,1 @@
+import{j as e,c as o,I as c,p as r,q as l,l as n,K as s}from"../app.1KxAZIRc.js";const p={__name:"StatusTag",props:{tag:{type:Object,default:null}},setup(t){return(g,m)=>{const a=e("a-tag");return t.tag?(o(),c(a,{key:0,color:t.tag.color},{default:r(()=>[l(n(t.tag.label),1)]),_:1},8,["color"])):s("",!0)}}};export{p as _};

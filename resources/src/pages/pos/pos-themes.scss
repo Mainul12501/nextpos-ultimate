@@ -1,0 +1,507 @@
+/**
+ * POS Themes — colour tokens + theme rules for PosPage (and the System
+ * Settings → POS Theme preview). Global, NOT scoped: every rule hangs off
+ * `.pos-scope`, the POS root, which carries the theme classes from
+ * pos-compat/posThemeMixin.js:
+ *   .pos-theme-<classic|touch|compact|split|cards>   layout
+ *   .pos-mode-<light|dark>                           colour mode
+ *
+ * Tokens: every light value equals the literal it replaced in PosPage.vue,
+ * so Classic Light renders exactly as before. Themes override tokens /
+ * layout only — never sale logic. The printed receipt (#invoice-POS) never
+ * uses tokens: it is copied into a print window where they don't exist.
+ */
+
+.pos-scope {
+  /* Surfaces */
+  --pos-bg: #f7f7fb;            /* page background */
+  --pos-bg-deep: #f1f1f6;
+  --pos-surface: #ffffff;       /* cards, panels, header, cart */
+  --pos-surface-2: #f3f3f7;     /* muted surface / hover */
+
+  /* Lines */
+  --pos-border: #e6e6ec;
+  --pos-border-strong: #d8d8e0;
+  --pos-border-soft: #ececf3;
+
+  /* Text */
+  --pos-text: #1f1f2c;
+  --pos-text-2: #54546a;
+  --pos-text-muted: #8d8da0;
+
+  /* Accent (purple) */
+  --pos-accent: #6f53d9;
+  --pos-accent-soft: #f5f3fd;   /* faint tint */
+  --pos-accent-soft-2: #ece9fb; /* stronger tint */
+  --pos-accent-soft-3: #f0ecfb;
+
+  /* Status */
+  --pos-success-soft: #eaf7ef;
+  --pos-success-text: #1e7a44;
+  --pos-danger-soft: #fdecec;
+  --pos-danger-text: #a83232;
+
+  /* Legacy palette still used by older POS rules ($color-* SCSS vars). */
+  --pos-l-bg: #f8f9fb;
+  --pos-l-text: #1a1a2e;
+  --pos-l-text-2: #6b7280;
+  --pos-l-text-3: #9ca3af;
+  --pos-l-border: #e5e7eb;
+
+  /* Grey palette used by the payment modal and a few POS panels. */
+  --pos-g-surface: #f9fafb;
+  --pos-g-surface-2: #f3f4f6;
+  --pos-g-text: #1f2937;
+  --pos-g-text-2: #4b5563;
+  --pos-g-border-strong: #d1d5db;
+
+  /* `--pos-dk-*` role tokens are deliberately NOT defined in light mode:
+     rules use them as `var(--pos-dk-x, <original light colour>)`, so light
+     keeps its exact literal and only dark mode (below) assigns them. */
+}
+
+/* Layout themes change sizes/arrangement on the desktop side-by-side
+   layout only (>1024px); at ≤1024px the POS keeps its stacked tablet/phone
+   layout with the bottom tab bar. Colour mode and touch sizing apply at
+   every width. */
+$pos-desktop: "(min-width: 1025px)";
+
+/* =====================================================================
+   DARK MODE — .pos-mode-dark (Dark, or Auto on a dark device)
+   ===================================================================== */
+/* On tablets/phones the whole document scrolls (not the POS root), so the
+   page scrollbar and overscroll area must go dark too. Only while a dark POS
+   (or the theme preview) is on the page. */
+html:has(.pos-scope.pos-mode-dark) {
+  color-scheme: dark;
+  background: #0f1220;
+}
+html:has(.pos-scope.pos-mode-dark) body {
+  background: #0f1220;
+  /* vue-select menus opened with append-to-body (batch picker) live here,
+     outside .pos-scope, so they need the dark vue-select vars too. */
+  --vs-colors--lightest: rgba(255, 255, 255, 0.16);
+  --vs-colors--light: rgba(255, 255, 255, 0.5);
+  --vs-colors--dark: #e8e9f3;
+  --vs-dropdown-bg: #171b2e;
+  --vs-dropdown-color: #e8e9f3;
+  --vs-dropdown-option-color: #e8e9f3;
+  --vs-selected-bg: #1f2440;
+}
+
+.pos-scope.pos-mode-dark {
+  color-scheme: dark;
+  color: var(--pos-text);
+  background: var(--pos-bg);
+
+  --pos-bg: #0f1220;
+  --pos-bg-deep: #0b0e1a;
+  --pos-surface: #171b2e;
+  --pos-surface-2: #1f2440;
+  --pos-border: #2a3050;
+  --pos-border-strong: #383f66;
+  --pos-border-soft: #232842;
+  --pos-text: #e8e9f3;
+  --pos-text-2: #b6b9ce;
+  --pos-text-muted: #8a8ea8;
+  --pos-accent: #8c74f2;
+  --pos-accent-soft: rgba(140, 116, 242, 0.12);
+  --pos-accent-soft-2: rgba(140, 116, 242, 0.22);
+  --pos-accent-soft-3: rgba(140, 116, 242, 0.18);
+  --pos-success-soft: rgba(47, 174, 94, 0.16);
+  --pos-success-text: #5fd68d;
+  --pos-danger-soft: rgba(214, 69, 69, 0.18);
+  --pos-danger-text: #f08a8a;
+
+  --pos-l-bg: #121527;
+  --pos-l-text: #e8e9f3;
+  --pos-l-text-2: #a3a7bf;
+  --pos-l-text-3: #7d8199;
+  --pos-l-border: #2a3050;
+
+  --pos-g-surface: #1a1e33;
+  --pos-g-surface-2: #1f2440;
+  --pos-g-text: #e8e9f3;
+  --pos-g-text-2: #b6b9ce;
+  --pos-g-border-strong: #383f66;
+
+  /* Role tokens (light tints that need a dark counterpart) */
+  --pos-dk-tint: #1a1e33;
+  --pos-dk-tint-strong: #2e3456;
+  --pos-dk-rose-soft: rgba(244, 63, 94, 0.12);
+  --pos-dk-cyan-soft: rgba(6, 182, 212, 0.12);
+  --pos-dk-danger-soft: rgba(239, 68, 68, 0.14);
+  --pos-dk-warning-soft: rgba(245, 158, 11, 0.14);
+  --pos-dk-success-soft: rgba(34, 197, 94, 0.14);
+  --pos-dk-accent-soft: rgba(140, 116, 242, 0.18);
+  --pos-dk-line: #2a3050;
+  --pos-dk-danger-line: rgba(239, 68, 68, 0.4);
+  --pos-dk-warning-line: rgba(245, 158, 11, 0.4);
+  --pos-dk-ink: #e8e9f3;
+  --pos-dk-rose-text: #f472b6;
+  --pos-dk-danger-text: #f87171;
+  --pos-dk-warning-text: #fbbf24;
+  --pos-dk-success-text: #4ade80;
+  --pos-dk-accent-text: #a78bfa;
+  --pos-dk-cyan-text: #22d3ee;
+
+  /* vue-select (customer / warehouse pickers inside modals) */
+  --vs-colors--lightest: rgba(255, 255, 255, 0.16);
+  --vs-colors--light: rgba(255, 255, 255, 0.5);
+  --vs-colors--dark: #e8e9f3;
+  --vs-colors--darkest: rgba(0, 0, 0, 0.4);
+  --vs-state-disabled-bg: #1a1e33;
+  --vs-selected-bg: #1f2440;
+  --vs-dropdown-bg: #171b2e;
+  --vs-controls--deselect-text-shadow: none;
+
+  /* Product grid / cart: overlays that were inline translucent white */
+  .pos-codecanyon .pos-shell-card-loading { background: rgba(15, 18, 32, 0.72) !important; }
+  .pos-codecanyon .pos-shell-card-discount { background: rgba(23, 27, 46, 0.92) !important; color: #f87171 !important; }
+  .pos-codecanyon .pos-shell-card-initials,
+  .pos-codecanyon .pos-shell-cart-thumb { color: rgba(232, 233, 243, 0.6) !important; }
+
+  /* ---- Bootstrap components (modals, forms, dropdowns, tables) ---- */
+  .modal-content {
+    background-color: var(--pos-surface);
+    border-color: var(--pos-border);
+    color: var(--pos-text);
+  }
+  .modal-header,
+  .modal-footer { border-color: var(--pos-border); }
+  .close { color: var(--pos-text); text-shadow: none; }
+  hr { border-top-color: var(--pos-border); }
+
+  .form-control,
+  .custom-select {
+    background-color: var(--pos-surface-2);
+    border-color: var(--pos-border-strong);
+    color: var(--pos-text);
+  }
+  .form-control:focus,
+  .custom-select:focus {
+    background-color: var(--pos-surface-2);
+    color: var(--pos-text);
+  }
+  .form-control::placeholder { color: var(--pos-text-muted); }
+  .form-control:disabled,
+  .form-control[readonly] { background-color: var(--pos-bg-deep); }
+  .input-group-text {
+    background-color: var(--pos-bg-deep);
+    border-color: var(--pos-border-strong);
+    color: var(--pos-text-2);
+  }
+  .custom-control-label::before {
+    background-color: var(--pos-surface-2);
+    border-color: var(--pos-border-strong);
+  }
+
+  .dropdown-menu {
+    background-color: var(--pos-surface);
+    border-color: var(--pos-border);
+    color: var(--pos-text);
+  }
+  .dropdown-item { color: var(--pos-text); }
+  .dropdown-item:hover,
+  .dropdown-item:focus { background-color: var(--pos-surface-2); color: var(--pos-text); }
+  .dropdown-divider { border-top-color: var(--pos-border); }
+  .dropdown-header { color: var(--pos-text-muted); }
+
+  .table { color: var(--pos-text); }
+  .table th,
+  .table td,
+  .table thead th { border-color: var(--pos-border); }
+  .table-striped tbody tr:nth-of-type(odd) { background-color: rgba(255, 255, 255, 0.03); }
+  .table-hover tbody tr:hover { background-color: rgba(255, 255, 255, 0.05); color: var(--pos-text); }
+  .thead-light th {
+    background-color: var(--pos-surface-2);
+    border-color: var(--pos-border);
+    color: var(--pos-text-2);
+  }
+
+  .card,
+  .list-group-item {
+    background-color: var(--pos-surface);
+    border-color: var(--pos-border);
+    color: var(--pos-text);
+  }
+  .card-header,
+  .card-footer { background-color: var(--pos-surface-2); border-color: var(--pos-border); }
+  .nav-tabs { border-color: var(--pos-border); }
+  .nav-tabs .nav-link.active {
+    background-color: var(--pos-surface);
+    border-color: var(--pos-border) var(--pos-border) var(--pos-surface);
+    color: var(--pos-text);
+  }
+  .page-link {
+    background-color: var(--pos-surface);
+    border-color: var(--pos-border);
+    color: var(--pos-text-2);
+  }
+  .page-item.disabled .page-link { background-color: var(--pos-surface); }
+
+  .btn-light {
+    background-color: var(--pos-surface-2);
+    border-color: var(--pos-border);
+    color: var(--pos-text);
+  }
+  .btn-outline-secondary { border-color: var(--pos-border-strong); color: var(--pos-text-2); }
+  /* The legacy skin forces .btn-secondary white with !important. */
+  .btn-secondary,
+  .btn-raised-secondary {
+    background-color: var(--pos-surface-2) !important;
+    border-color: var(--pos-border) !important;
+    color: var(--pos-text) !important;
+  }
+
+  /* The legacy skin colours every heading near-black
+     (globals-legacy/_typography.scss: h1-h6, .card-title { color: $heading }). */
+  h1, h2, h3, h4, h5, h6 { color: var(--pos-text); }
+  .card-title,
+  .text-title { color: var(--pos-text); }
+
+  /* Payment modal — rules from globals-legacy/views/_pos.scss that hard-code
+     $pos-white / $pos-gray-* and outrank the modal's own tokenised styles.
+     (.stripe-card-element stays white: Stripe's iframe draws dark text.) */
+  .payment-line-card { background: var(--pos-g-surface); border-color: var(--pos-border); }
+  .payment-line-header { background: var(--pos-surface); border-bottom-color: var(--pos-border); }
+  .line-title { color: var(--pos-text); }
+  .quick-btn {
+    background: var(--pos-surface-2);
+    border-color: var(--pos-border-strong);
+    color: var(--pos-text);
+  }
+  .quick-btn:hover {
+    background: var(--pos-accent);
+    border-color: var(--pos-accent);
+    color: #ffffff;
+  }
+  .checkbox-item { color: var(--pos-text-2); }
+
+  .text-dark { color: var(--pos-text) !important; }
+  .text-muted { color: var(--pos-text-muted) !important; }
+  .bg-white { background-color: var(--pos-surface) !important; }
+}
+
+/* =====================================================================
+   SPLIT SCREEN — product catalog on the start side, cart on the end side
+   (left/right in LTR, mirrored in RTL by the flex direction).
+   ===================================================================== */
+@media #{$pos-desktop} {
+  .pos-scope.pos-theme-split .pos-codecanyon .pos-shell-main {
+    flex-direction: row-reverse !important;
+  }
+  .pos-scope.pos-theme-split .pos-codecanyon .pos-shell-cart-aside {
+    flex: 0 0 clamp(380px, 40%, 560px) !important;
+    width: auto !important;
+    border-right: 0 !important;
+    /* Divider faces the catalog: inline-start = left in LTR, right in RTL. */
+    border-inline-start: 1px solid var(--pos-border) !important;
+  }
+}
+
+/* =====================================================================
+   COMPACT — dense layout: more products and cart lines on screen
+   ===================================================================== */
+@media #{$pos-desktop} {
+  .pos-scope.pos-theme-compact .pos-codecanyon {
+    .pos-shell-cart-aside { flex: 0 0 42% !important; width: 42% !important; }
+
+    .pos-shell-products-grid {
+      grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)) !important;
+      gap: 4px !important;
+    }
+    .pos-shell-product-card { padding: 6px 8px !important; border-radius: 8px !important; }
+    /* No image strip: the swatch collapses, the discount pill moves to the corner. */
+    .pos-shell-product-card .pos-shell-card-media { margin: -6px -8px 2px !important; }
+    .pos-shell-product-card .pos-shell-card-swatch { height: 0 !important; }
+    /* Pill sits at the end of the name line (logical: right in LTR, left in
+       RTL — the later inset-inline-end wins over the physical resets), and
+       the name reserves room for it so the two never overlap. */
+    .pos-shell-product-card .pos-shell-card-discount {
+      top: 6px !important;
+      left: auto !important;
+      right: auto !important;
+      inset-inline-end: 6px !important;
+      padding: 1px 5px !important;
+      font-size: 9px !important;
+      z-index: 1;
+    }
+    .pos-shell-product-card:has(.pos-shell-card-discount) .pos-shell-card-name {
+      padding-inline-end: 34px;
+    }
+    .pos-shell-product-card .pos-shell-card-name { font-size: 12px !important; }
+    .pos-shell-product-card .pos-shell-card-meta { font-size: 9.5px !important; margin-bottom: 3px !important; }
+    .pos-shell-product-card .pos-shell-card-price { font-size: 13px !important; }
+    .pos-shell-product-card .pos-shell-add-btn { width: 20px !important; height: 20px !important; }
+
+    .pos-shell-cart-row {
+      grid-template-columns: 26px 1fr auto !important;
+      gap: 6px !important;
+      padding: 3px 6px !important;
+    }
+    .pos-shell-cart-row .pos-shell-cart-thumb { width: 26px !important; height: 26px !important; }
+    .pos-shell-cart-row .pos-shell-cart-name { font-size: 12px !important; }
+
+    .pos-shell-action-btn { height: 32px !important; padding: 0 10px !important; font-size: 12px !important; }
+    .pos-shell-pay-bar { padding-top: 6px !important; padding-bottom: 6px !important; }
+    .pos-shell-pay-btn { height: 42px !important; font-size: 14px !important; }
+  }
+}
+
+/* =====================================================================
+   TOUCHSCREEN — large targets (≥40-48px) for touch monitors and tablets
+   ===================================================================== */
+.pos-scope.pos-theme-touch {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(111, 83, 217, 0.15);
+
+  .pos-codecanyon {
+    /* Cart line controls */
+    .pos-shell-cart-row { padding: 10px !important; gap: 10px !important; grid-template-columns: 44px 1fr auto !important; }
+    .pos-shell-cart-row .pos-shell-cart-thumb { width: 44px !important; height: 44px !important; }
+    .pos-shell-cart-row .pos-shell-cart-name { font-size: 15px !important; }
+    .pos-shell-cart-row .pos-shell-line-total { font-size: 15px !important; }
+    .pos-shell-cart-row select { height: 40px !important; font-size: 13px !important; }
+    .pos-shell-qty { height: 40px !important; border-radius: 8px !important; }
+    .pos-shell-qty .pos-shell-qty-btn { width: 40px !important; height: 38px !important; font-size: 20px !important; }
+    .pos-shell-qty .pos-shell-qty-input { width: 48px !important; font-size: 15px !important; }
+    .pos-shell-cart-row .pos-shell-line-btn { min-width: 40px; min-height: 40px; padding: 10px !important; }
+    .pos-shell-cart-row .pos-shell-line-btn svg { width: 18px !important; height: 18px !important; }
+
+    /* Charges (tax / discount / shipping) */
+    .pos-shell-charges-row label > div:last-child { height: 40px !important; }
+    .pos-shell-charges-row input { font-size: 14px !important; }
+
+    /* Search + product cards */
+    .pos-shell-search-input { height: 48px !important; font-size: 15px !important; }
+    .pos-shell-product-card { padding: 12px !important; }
+    .pos-shell-product-card .pos-shell-card-media { margin: -12px -12px 10px !important; }
+    .pos-shell-product-card .pos-shell-card-swatch { height: 84px !important; }
+    .pos-shell-product-card .pos-shell-card-name { font-size: 15px !important; }
+    .pos-shell-product-card .pos-shell-card-meta { font-size: 11px !important; }
+    .pos-shell-product-card .pos-shell-card-price { font-size: 17px !important; }
+    .pos-shell-product-card .pos-shell-add-btn { width: 36px !important; height: 36px !important; border-radius: 10px !important; }
+    .pos-shell-product-card .pos-shell-add-btn svg { width: 18px !important; height: 18px !important; }
+    .pos-shell-pagination button { min-width: 40px; min-height: 40px; }
+  }
+}
+@media #{$pos-desktop} {
+  .pos-scope.pos-theme-touch .pos-codecanyon {
+    .pos-shell-header { height: 64px !important; min-height: 64px !important; }
+    .pos-shell-icon-btn { width: 44px !important; height: 44px !important; }
+    /* Desktop only: phones shrink these to icon squares. */
+    .pos-shell-action-btn { height: 48px !important; font-size: 14px !important; }
+    .pos-shell-products-grid {
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)) !important;
+      gap: 10px !important;
+    }
+    .pos-shell-pay-btn { height: 60px !important; font-size: 18px !important; padding: 0 36px !important; }
+  }
+}
+
+/* =====================================================================
+   MODERN CARDS — image-led square cards, name + price over a scrim.
+   Card styling applies at every width; desktop also gets roomier columns.
+   (Images always show here — see posCardImages in posThemeMixin.js.)
+   ===================================================================== */
+.pos-scope.pos-theme-cards .pos-codecanyon {
+  .pos-shell-product-card {
+    padding: 0 !important;
+    aspect-ratio: 1 / 1;
+    border-radius: 16px !important;
+    overflow: hidden;
+    border-color: var(--pos-border-soft) !important;
+    box-shadow: 0 1px 2px rgba(20, 20, 40, 0.06), 0 8px 24px -14px rgba(20, 20, 40, 0.28);
+    transition: transform 140ms ease, box-shadow 140ms ease !important;
+  }
+  .pos-shell-product-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(20, 20, 40, 0.08), 0 14px 30px -14px rgba(20, 20, 40, 0.36);
+  }
+  /* Image fills the whole card */
+  .pos-shell-product-card .pos-shell-card-media {
+    position: absolute !important;
+    inset: 0;
+    margin: 0 !important;
+  }
+  .pos-shell-product-card .pos-shell-card-swatch {
+    height: 100% !important;
+    border-radius: 0 !important;
+    background-size: cover !important;
+  }
+  .pos-shell-product-card .pos-shell-card-initials { font-size: 28px !important; }
+  /* Scrim behind the text */
+  .pos-shell-product-card::after {
+    content: "";
+    position: absolute;
+    inset: 42% 0 0 0;
+    background: linear-gradient(180deg, rgba(10, 10, 20, 0) 0%, rgba(10, 10, 20, 0.78) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .pos-shell-product-card .pos-shell-card-name,
+  .pos-shell-product-card .pos-shell-card-meta,
+  .pos-shell-product-card .pos-shell-card-foot {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    z-index: 2;
+    text-align: start;
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+  }
+  .pos-shell-product-card .pos-shell-card-foot { bottom: 8px; }
+  .pos-shell-product-card .pos-shell-card-name {
+    bottom: 44px;
+    margin: 0 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+  }
+  .pos-shell-product-card .pos-shell-card-meta {
+    bottom: 62px;
+    margin: 0 !important;
+    color: rgba(255, 255, 255, 0.78) !important;
+  }
+  .pos-shell-product-card .pos-shell-card-price {
+    color: #ffffff !important;
+    font-size: 16px !important;
+  }
+  .pos-shell-product-card .pos-shell-add-btn {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 999px !important;
+    background: var(--pos-accent) !important;
+    color: #ffffff !important;
+    text-shadow: none;
+  }
+  .pos-shell-product-card .pos-shell-card-discount {
+    top: 10px !important;
+    left: 10px !important;
+    z-index: 3;
+    border-radius: 999px !important;
+    background: #d64545 !important;
+    color: #ffffff !important;
+  }
+  .pos-shell-product-card .pos-shell-card-loading { z-index: 4 !important; border-radius: 16px !important; }
+}
+.pos-scope.pos-theme-cards .pos-codecanyon .pos-shell-product-card .pos-shell-card-price {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+/* Phones: the POS's 3-column grid leaves ~120px cards — too narrow for text
+   over an image. Two roomier columns instead. */
+@media (max-width: 600px) {
+  .pos-scope.pos-theme-cards .pos-codecanyon .pos-shell-products-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+}
+@media #{$pos-desktop} {
+  .pos-scope.pos-theme-cards .pos-codecanyon .pos-shell-products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
+    gap: 12px !important;
+  }
+}
