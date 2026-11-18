@@ -15,7 +15,6 @@ agent/
 /storage/*.key
 /storage/framework/sessions
 /vendor
-.env
 .env.backup
 composer.phar
 .phpunit.result.cache
